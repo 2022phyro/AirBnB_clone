@@ -1,39 +1,36 @@
 #!/usr/bin/python3
 from _datetime import datetime
 import uuid
-from models import storage
 
 
 class BaseModel:
     def __init__(self, *args, **kwargs):
-        if len(kwargs) == 0:
+        if not kwargs:
+            from models import storage
             self.id = str(uuid.uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
             storage.new(self)
         else:
-            for key, value in kwargs.items():
-                if key == "created_at" or key == "updated_at":
-                    formats = "%Y-%m-%dT%H:%M:%S.%f"
-                    setattr(self, key, datetime.strptime(value, formats))
-                try:
-                    if key == "__class__":
-                        continue
-                    setattr(self, key, value)
-                except KeyError:
-                    continue
+            formats = "%Y-%m-%dT%H:%M:%S.%f"
+            kwargs['created_at'] = datetime.strptime(kwargs['created_at'], formats)
+            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'], formats)
+            del kwargs['__class__']
+            self.__dict__.update(kwargs)
 
     def __str__(self):
         st = f"[{self.__class__.__name__}] ({self.id}) {self.__dict__}"
         return st
 
     def to_dict(self):
-        my_obj_dict = self.__dict__
-        my_obj_dict["__class__"] = self.__class__.__name__
+        my_obj_dict = {}
+        my_obj_dict.update(self.__dict__)
+        my_obj_dict.update({"__class__": self.__class__.__name__})
         my_obj_dict['created_at'] = self.created_at.isoformat()
         my_obj_dict['updated_at'] = self.updated_at.isoformat()
         return my_obj_dict
 
     def save(self):
+        from models import storage
         self.updated_at = datetime.now()
-        # storage.save()
+        storage.save()
