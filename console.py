@@ -1,7 +1,9 @@
 #!/usr/bin/python3
+"""The HBNB console"""
 import cmd
 from models.base_model import BaseModel
 from models.review import Review
+
 from models.amenity import Amenity
 from models.city import City
 from models.place import Place
@@ -9,8 +11,7 @@ from models.state import State
 from models.user import User
 from models import storage
 import re
-classes = {'BaseModel': BaseModel, "Review": Review, "Amenity": Amenity,
-               "User": User, "Place": Place, "City": City, "State": State}
+
 
 class HBNBCommand(cmd.Cmd):
     """This defines the structure of our AirBnB clone interpreter
@@ -18,6 +19,8 @@ class HBNBCommand(cmd.Cmd):
         prompt: the prompt (hbnb)
         classes: a dictionary of all our classes"""
     prompt = '(hbnb)'
+    classes = {'BaseModel': BaseModel, "Review": Review, "Amenity": Amenity,
+               "User": User, "Place": Place, "City": City, "State": State}
 
     def do_quit(self, value):
         """Quit command to exit the program"""
@@ -37,10 +40,10 @@ class HBNBCommand(cmd.Cmd):
         Usage: create <classname>"""
         if not value:
             print('** class name missing **')
-        elif value not in classes.keys():
+        elif value not in self.classes.keys():
             print("** class doesn't exist **")
         else:
-            new = classes[value]()
+            new = self.classes[value]()
             new.save()
             print(new.id)
 
@@ -55,24 +58,24 @@ class HBNBCommand(cmd.Cmd):
         if not line:
             end = [str(item) for item in storage.all().values()]
             print(end)
-        elif line[0] not in classes.keys():
+        elif line[0] not in self.classes.keys():
             print("** class doesn't exist **")
         else:
             end = [str(item) for item in storage.all().values()
-                   if item.to_dict()['__class__'] == line[0] ]
+                   if item.to_dict()['__class__'] == line[0]]
             print(end)
-    #
-    # def count(self, value):
-    #     line = value.split()
-    #     if line[1] not in classes.keys():
-    #         print("** class doesn't exist **")
-    #     else:
-    #         i = 0
-    #         for item in storage.all().values():
-    #             if item.to_dict()['__class__'] == line[1]:
-    #                 i += 1
-    #         print(i)
-    #
+
+    def count(self, value):
+        line = value.split()
+        if line[1] not in self.classes.keys():
+            print("** class doesn't exist **")
+        else:
+            i = 0
+            for item in storage.all().values():
+                if item.to_dict()['__class__'] == line[1]:
+                    i += 1
+            print(i)
+
     def do_show(self, value):
         """Shows all instances of a particular class
         Usage: show <classname> <object id>
@@ -80,7 +83,7 @@ class HBNBCommand(cmd.Cmd):
         line = value.split()
         if not line:
             print("** class name missing **")
-        elif line[0] not in classes.keys():
+        elif line[0] not in self.classes.keys():
             print("** class doesn't exist **")
         elif len(line) < 2:
             print("** instance id missing **")
@@ -90,14 +93,14 @@ class HBNBCommand(cmd.Cmd):
                 print(storage.all()[key])
             except KeyError:
                 print("** no instance found **")
-    #
+
     def do_destroy(self, value):
         """Deletes the specified object
         Usage destroy <class name> <id>"""
         line = value.split()
         if not line:
             print("** class name missing **")
-        elif line[0] not in classes.keys():
+        elif line[0] not in self.classes.keys():
             print("** class doesn't exist **")
         elif len(line) < 2:
             print("** instance id missing **")
@@ -117,7 +120,7 @@ class HBNBCommand(cmd.Cmd):
             key = f"{line[0]}.{line[1]}"
         if not line:
             print("** class name missing **")
-        elif line[0] not in classes.keys():
+        elif line[0] not in self.classes.keys():
             print("** class doesn't exist **")
         elif len(line) < 2:
             print("** instance id missing **")
@@ -130,26 +133,25 @@ class HBNBCommand(cmd.Cmd):
         else:
             storage.all()[key].__dict__.update({line[2]: line[3]})
             storage.save()
-    #
-    # def precmd(self, line):
-    #     # val = re.findall("^\S+\.[(all)(count)]+\(\)$", line.strip())
-    #     # val = re.findall("^\S+\.[(show)(destroy)]+\(S+\)$", line.strip())
-    #     val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
-    #     if val:
-    #         command = re.split("[\s|\(|\)|\"|\'|\.]", line)
-    #         temp = command[1]
-    #         command[1] = command[0]
-    #         command[0] = temp
-    #         print(val)
-    #         end = " ".join(command).strip()
-    #         if command[0] == 'count':
-    #             print(f"/{end}/")
-    #             self.count(end)
-    #             return ""
-    #         else:
-    #
-    #             return end
-    #     return line
+
+    def precmd(self, line):
+        val = re.findall(r"^\S+\.[(all)(count)]+\(\)$", line.strip())
+        # # val = re.findall("^\S+\.[(show)(destroy)]+\(S+\)$", line.strip())
+        # val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
+        if val:
+            command = re.split(r"[\s()\"\'.]", line)
+            temp = command[1]
+            command[1] = command[0]
+            command[0] = temp
+            # print(val)
+            end = " ".join(command).strip()
+            if command[0] == 'count':
+                self.count(end)
+                return ""
+            else:
+
+                return end
+        return line
 
 
 if __name__ == '__main__':
