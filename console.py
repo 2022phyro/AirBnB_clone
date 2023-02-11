@@ -1,12 +1,21 @@
 #!/usr.bin.python3
 import cmd
 from models.base_model import BaseModel
+from models.review import Review
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.state import State
+from models.user import User
 from models import storage
+import re
 
 
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
-    classes = {'BaseModel': BaseModel}
+    classes = {'BaseModel': BaseModel, "Review": Review, "Amenity": Amenity,
+               "User": User, "Place": Place, "City": City, "State": State}
+    storage.reload()
 
     def do_quit(self, value):
         """Quit whenever someone press quit"""
@@ -29,6 +38,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
         else:
             new = self.classes[value]()
+            new.save()
 
     def do_all(self, value):
         """It shows all created instances of the class"""
@@ -42,6 +52,17 @@ class HBNBCommand(cmd.Cmd):
             for item in storage.all().values():
                 if item.to_dict()['__class__'] == line[0]:
                     print(item)
+
+    def count(self, value):
+        line = value.split()
+        if line[1] not in self.classes.keys():
+            print("** class doesn't exist **")
+        else:
+            i = 0
+            for item in storage.all().values():
+                if item.to_dict()['__class__'] == line[1]:
+                    i += 1
+            print(i)
 
     def do_show(self, value):
         """Shows all instances of a particular class"""
@@ -81,7 +102,8 @@ class HBNBCommand(cmd.Cmd):
         """Update the specified object
         Usage: update <class name> <id> <attribute> <value>"""
         line = value.split()
-        key = f"{line[0]}.{line[1]}"
+        if len(line) >= 2:
+            key = f"{line[0]}.{line[1]}"
         if not line:
             print("** class name missing **")
         elif line[0] not in self.classes.keys():
@@ -97,6 +119,29 @@ class HBNBCommand(cmd.Cmd):
         else:
             storage.all()[key].__dict__.update({line[2]: line[3]})
 
+    def precmd(self, line):
+        # val = re.findall("^\S+\.[(all)(count)]+\(\)$", line.strip())
+        # val = re.findall("^\S+\.[(show)(destroy)]+\(S+\)$", line.strip())
+        val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
+        if val:
+            command = re.split("[\s|\(|\)|\"|\'|\.]", line)
+            temp = command[1]
+            command[1] = command[0]
+            command[0] = temp
+            print(val)
+            end = " ".join(command).strip()
+            if command[0] == 'count':
+                print(f"/{end}/")
+                self.count(end)
+                return ""
+            else:
+
+                return end
+        return line
+
+    # def onecmd(self, line):
+    #     if line == 'User.all()':
+    #         print("User.all")
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
