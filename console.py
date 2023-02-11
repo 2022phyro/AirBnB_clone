@@ -135,28 +135,29 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
 
     def precmd(self, line):
+        flag = False
         ac = r"^\S+\.(all)|(count)\(\)$"
-        # val = re.findall(, line.strip())
-        ma = r"^\S+\.(show)|(destroy)\(\S*\)$"
+        sd = r"^\S+\.(show)|(destroy)\(\S*\)$"
         up = r"^\S+\.update\(.*\)$"
-        # all_regex = [ac, ma]
-        # ma = r"^\S+\.show\(\S*\)$"
-        val = re.findall(ma, line.strip())
-        # val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
-        if val:
-            command = re.split(r"[\s()\"\'.,]", line)
-            temp = command[1]
-            command[1] = command[0]
-            command[0] = temp
-            print(val)
-            end = " ".join(command).strip()
-            if command[0] == 'count':
-                self.count(end)
-                return ""
-            else:
-
-                return end
-        return line
+        # up_dict = r"^\S+\.update\((\S*,\s)\{.*\}\)$"
+        all_regex = [up, sd, ac]
+        for i in range(len(all_regex)):
+            val = re.findall(all_regex[i], line.strip())
+            if val:
+                flag = True
+                break
+        if flag is False:
+            return line
+        command = re.split(r"[\s()\"\'.,]", line)
+        temp = command[1]
+        command[1] = command[0]
+        command[0] = temp
+        end = " ".join(command).strip()
+        if command[0] == 'count':
+            self.count(end)
+            return ""
+        else:
+            return end
 
 
 if __name__ == '__main__':
