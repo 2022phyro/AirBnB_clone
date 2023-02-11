@@ -141,7 +141,7 @@ class HBNBCommand(cmd.Cmd):
         up = r"^\S+\.update\(.*\)$"
         # all_regex = [ac, ma]
         # ma = r"^\S+\.show\(\S*\)$"
-        val = re.findall(up, line.strip())
+        val = re.findall(ma, line.strip())
         # val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
         if val:
             command = re.split(r"[\s()\"\'.,]", line)
