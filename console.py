@@ -135,15 +135,20 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
 
     def precmd(self, line):
-        val = re.findall(r"^\S+\.[(all)(count)]+\(\)$", line.strip())
-        # # val = re.findall("^\S+\.[(show)(destroy)]+\(S+\)$", line.strip())
+        ac = r"^\S+\.(all)|(count)\(\)$"
+        # val = re.findall(, line.strip())
+        ma = r"^\S+\.(show)|(destroy)\(\S*\)$"
+        up = r"^\S+\.update\(.*\)$"
+        # all_regex = [ac, ma]
+        # ma = r"^\S+\.show\(\S*\)$"
+        val = re.findall(up, line.strip())
         # val = re.findall("^\S+\.\w+\(.*\)$", line.strip())
         if val:
-            command = re.split(r"[\s()\"\'.]", line)
+            command = re.split(r"[\s()\"\'.,]", line)
             temp = command[1]
             command[1] = command[0]
             command[0] = temp
-            # print(val)
+            print(val)
             end = " ".join(command).strip()
             if command[0] == 'count':
                 self.count(end)
