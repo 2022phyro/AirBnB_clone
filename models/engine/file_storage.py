@@ -37,8 +37,9 @@ class FileStorage:
             from models.state import State
             from models.user import User
 
-            classes = {'BaseModel': BaseModel, "Review": Review, "Amenity": Amenity,
-                       "User": User, "Place": Place, "City": City, "State": State}
+            classes = {'BaseModel': BaseModel, "Review": Review,
+                       "Amenity": Amenity, "User": User,
+                       "Place": Place, "City": City, "State": State}
             with open(self.__file_path, 'r') as reload:
                 text = json.load(reload)
                 for key, value in text.items():
