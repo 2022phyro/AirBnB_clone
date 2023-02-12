@@ -3,7 +3,6 @@
 import cmd
 from models.base_model import BaseModel
 from models.review import Review
-
 from models.amenity import Amenity
 from models.city import City
 from models.place import Place
@@ -37,7 +36,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_create(self, value):
         """Creates a new class value and prints out its id
-        Usage: create <classname>"""
+        Usage: create <class name>"""
         if not value:
             print('** class name missing **')
         elif value not in self.classes.keys():
@@ -66,6 +65,9 @@ class HBNBCommand(cmd.Cmd):
             print(end)
 
     def count(self, value):
+        """This counts all instances of a particular class
+        It cannot be called directly but can be accessed through the
+        <classname>.count() action in the console"""
         line = value.split()
         if line[1] not in self.classes.keys():
             print("** class doesn't exist **")
@@ -134,12 +136,39 @@ class HBNBCommand(cmd.Cmd):
             storage.all()[key].__dict__.update({line[2]: line[3]})
             storage.save()
 
+    def update_with_dict(self, line):
+        """This updates the instance with the dictionary
+        representation from the console"""
+        up_dict = r"^\S+\.update\(\S+, \{.*\}\)$"
+        val = re.findall(up_dict, line.strip())
+        if not val:
+            raise ValueError
+        splt = r"[.()]"
+        ma = re.split(splt, line.strip())
+        ve = re.split(r", ", ma[2], maxsplit=1)
+        m = r'"'
+        ve[1].replace(r"\'", m)
+        del ma[2]
+        ma.insert(2, ve[0])
+        ma.insert(3, ve[1])
+        all = eval(ve[1])
+        for key, value in all.items():
+            command = f"{ma[0]} {eval(ve[0])} {key} {value}"
+            self.do_update(command)
+
     def precmd(self, line):
+        """Actions to be carried out before parsing the line
+        to the console"""
+        try:
+            self.update_with_dict(line)
+            return ""
+        except:
+            pass
         flag = False
         ac = r"^\S+\.(all)|(count)\(\)$"
         sd = r"^\S+\.(show)|(destroy)\(\S*\)$"
         up = r"^\S+\.update\(.*\)$"
-        # up_dict = r"^\S+\.update\((\S*,\s)\{.*\}\)$"
+
         all_regex = [up, sd, ac]
         for i in range(len(all_regex)):
             val = re.findall(all_regex[i], line.strip())
