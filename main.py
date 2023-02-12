@@ -1,3 +1,3 @@
-st = "{'hello': 'john'}"
-print(eval(st))
-print(type(eval(st)))
+st = "{'hello': 6.7, 'age': 40}"
+a = eval('9.3')
+print(type(a))

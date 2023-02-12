@@ -1,9 +1,10 @@
 #!/usr/bin/python3
-"""This file contains the review class"""
+"""This is the place class"""
 from models.base_model import BaseModel
 
 
 class Place(BaseModel):
+    """This is the place class"""
     city_id = ""
     user_id = ""
     name = ""

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """The HBNB console"""
 import cmd
+import ast
 from models.base_model import BaseModel
 from models.review import Review
 from models.amenity import Amenity
@@ -64,17 +65,18 @@ class HBNBCommand(cmd.Cmd):
                    if item.to_dict()['__class__'] == line[0]]
             print(end)
 
-    def count(self, value):
+    def do_count(self, value):
         """This counts all instances of a particular class
-        It cannot be called directly but can be accessed through the
+        It shouldn't be called directly but can be accessed through the
         <classname>.count() action in the console"""
-        line = value.split()
-        if line[1] not in self.classes.keys():
+        if not value:
+            print('** class name missing **')
+        elif value not in self.classes.keys():
             print("** class doesn't exist **")
         else:
             i = 0
             for item in storage.all().values():
-                if item.to_dict()['__class__'] == line[1]:
+                if item.to_dict()['__class__'] == value:
                     i += 1
             print(i)
 
@@ -133,6 +135,10 @@ class HBNBCommand(cmd.Cmd):
         elif len(line) < 4:
             print("** value missing **")
         else:
+            try:
+                line[3] = ast.literal_eval(line[3])
+            except BaseException:
+                pass
             storage.all()[key].__dict__.update({line[2]: line[3]})
             storage.save()
 
@@ -142,28 +148,26 @@ class HBNBCommand(cmd.Cmd):
         up_dict = r"^\S+\.update\(\S+, \{.*\}\)$"
         val = re.findall(up_dict, line.strip())
         if not val:
-            raise ValueError
-        splt = r"[.()]"
-        ma = re.split(splt, line.strip())
-        ve = re.split(r", ", ma[2], maxsplit=1)
-        m = r'"'
-        ve[1].replace(r"\'", m)
-        del ma[2]
-        ma.insert(2, ve[0])
-        ma.insert(3, ve[1])
-        all = eval(ve[1])
+            return line
+        splt = r"[.]"
+        ma = re.split(splt, line.strip(), maxsplit=1)
+        ve = re.split(r"[(),\s]", ma[1].strip(")"), maxsplit=1)
+        del ma[1]
+        id_dict = re.split(r", ", ve.pop())
+        ve += id_dict
+        all = ast.literal_eval(ve[2])
         for key, value in all.items():
-            command = f"{ma[0]} {eval(ve[0])} {key} {value}"
+            sr = "'"
+            command = f"{ma[0]} {str(ve[1]).strip(sr)} {key} {value}"
             self.do_update(command)
+        return ""
 
     def precmd(self, line):
         """Actions to be carried out before parsing the line
         to the console"""
-        try:
-            self.update_with_dict(line)
+        a = self.update_with_dict(line)
+        if a == "":
             return ""
-        except:
-            pass
         flag = False
         ac = r"^\S+\.(all)|(count)\(\)$"
         sd = r"^\S+\.(show)|(destroy)\(\S*\)$"
@@ -177,16 +181,19 @@ class HBNBCommand(cmd.Cmd):
                 break
         if flag is False:
             return line
-        command = re.split(r"[\s()\"\'.,]", line)
+        command = re.split(r"[.]", line,  maxsplit=1)
+        command += re.split(r"[()]", command.pop().strip(")"))
+        command += re.split(r", ", command.pop())
         temp = command[1]
         command[1] = command[0]
         command[0] = temp
-        end = " ".join(command).strip()
-        if command[0] == 'count':
-            self.count(end)
-            return ""
-        else:
-            return end
+        string = ""
+        for item in command:
+            item = item.strip("'")
+            item = item.strip('"')
+            string += item + " "
+        end = " ".join(command)
+        return string.strip()
 
 
 if __name__ == '__main__':
