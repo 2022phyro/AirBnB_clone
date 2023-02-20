@@ -1,0 +1,27 @@
+header {
+    background-image: url('../images/logo.png');
+    background-repeat: no-repeat;
+    background-position: 5%, 20%;
+    background-size: auto;
+    line-height: 70px;
+    background-color: #FFFFFF;
+    height: 70px;
+    width: 100%;
+    max-height: 70px;
+    border-bottom: 1px solid #CCCCCC;
+}
+@media  (min-width: 320px) and (max-width: 768px) {
+    header {
+        background-image: url('../images/logo.png');
+        background-repeat: no-repeat;
+        background-position: 5%, 20%;
+        background-size: 75px;
+        line-height: 70px;
+        background-color: #FFFFFF;
+        height: 70px;
+        max-height: 40px;
+        width: 100%;
+        border-bottom: 1px solid #CCCCCC;
+    }
+  
+}

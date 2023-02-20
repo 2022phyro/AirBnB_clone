@@ -1,0 +1,25 @@
+* {    box-sizing: border-box;
+}
+body {
+    color: #484848;
+    font-family: (Circular, "Helvetica Neue",Helvetica,Arial,sans-serif);
+    font-size: 14px;
+    align-items: center;
+    justify-content: center;
+}
+.container {
+    margin-top: 2.2%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2.2%;
+    max-width: 73.20%;
+}
+@media  (max-width: 768px) {
+    .container {
+        margin-top: 30px;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 30px;
+        max-width: 90.2%;
+    }
+}

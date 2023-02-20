@@ -1,0 +1,40 @@
+.places {
+    gap: none;
+    display: flexbox;
+    margin-top: -1rem;
+    padding: none;
+}
+.places h1 {
+    font-size: 30px;
+    vertical-align: top;
+    text-align: left;
+    margin-bottom: -1rem;
+}
+.places ul {
+    margin-top: -1rem;
+    list-style: none;
+    display: flex;
+    flex-flow: row wrap;
+    flex-direction: row;
+    position: relative;
+    width: inherit;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    clear: both;
+    *zoom: 1;
+}
+.places ul li article {
+    width: 390px;
+    padding: 20px;
+    margin: 20px;
+    position: relative;
+    align-self: center;
+    border: 1px solid #FF5A5F;
+    border-radius: 4px;
+}
+.places ul li article > h2 {
+    font-size: 30px;
+    text-align: center;
+}
