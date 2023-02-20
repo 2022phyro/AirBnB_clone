@@ -25,7 +25,8 @@ button:hover {
 .locations {
     height: 100%;
     width: 25%;
-    text-justify: 30px;
+    text-align: left;
+    text-indent: 1%;
     line-height: 70%;
     padding-inline-start: 20px;
 }
@@ -33,6 +34,7 @@ button:hover {
     height: 100%;
     width: 25%;
     text-align: left;
+    text-indent: 1%;
     border-left: 1px solid #DDDDDD;
     line-height: 70%;
     padding-inline-start: 20px;

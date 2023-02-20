@@ -1,6 +1,4 @@
 .places {
-    gap: none;
-    display: flexbox;
     margin-top: -1rem;
     padding-bottom: 20px;
 }
@@ -11,8 +9,7 @@
     margin-bottom: -1rem;
 }
 .places ul {
-    list-style: none;
-    margin: none;
+    list-style: none;  
     display: flex;
     text-align: center;
     flex-flow: row wrap;
@@ -181,7 +178,7 @@
     margin-top: 40px;
 }
 .places ul li article .reviews > h2 {
-    font-size: 16;
+    font-size: 16px;
     border-bottom: 1px solid #DDDDDD;
     text-align: left;
 }
@@ -201,8 +198,6 @@
 }
 @media (max-width: 768px) {
     .places {
-        gap: none;
-        display: flexbox;
         margin-top: -1rem;
         padding-bottom: 20px;
     }
@@ -214,7 +209,6 @@
     }
     .places ul {
         list-style: none;
-        margin: none;
         display: flex;
         text-align: center;
         flex-flow: column wrap;
@@ -388,7 +382,7 @@
         margin-top: 40px;
     }
     .places ul li article .reviews > h2 {
-        font-size: 16;
+        font-size: 16px;
         border-bottom: 1px solid #DDDDDD;
         text-align: left;
     }

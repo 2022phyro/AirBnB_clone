@@ -1,6 +1,4 @@
 .places {
-    gap: none;
-    display: flexbox;
     margin-top: -1rem;
     padding-bottom: 20px;
 }
@@ -12,7 +10,6 @@
 }
 .places ul {
     list-style: none;
-    margin: none;
     display: flex;
     text-align: center;
     flex-flow: row wrap;
@@ -21,15 +18,17 @@
     position: relative;
     justify-content: center;
 }
-.places ul li article {
+.places > ul > li {
+    border: 1px solid #FF5A5F;
     width: 390px;
     padding: 20px;
     margin: 20px;
+}
+.places ul li article {
     flex-flow: row nowrap;
     align-items: stretch;
     position: relative;
     justify-content: center;
-    border: 1px solid #FF5A5F;
     border-radius: 4px;
 }
 .places ul li article > h2 {
@@ -178,7 +177,7 @@
     margin-top: 40px;
 }
 .places ul li article .reviews > h2 {
-    font-size: 16;
+    font-size: 16px;
     border-bottom: 1px solid #DDDDDD;
     text-align: left;
 }
